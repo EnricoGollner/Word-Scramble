@@ -17,9 +17,8 @@ struct ContentView: View {
             List{
                 Section{
                     TextField("Enter your word", text: $newWord)
-                        .autocapitalization(.none)  // disable automatic first letter capitalized
+                        .autocapitalization(.none)
                 }
-                
                 Section{
                     ForEach(usedWords, id: \.self){ word in
                         HStack{
@@ -31,20 +30,33 @@ struct ContentView: View {
             }
             .navigationTitle(rootWord)
             .onSubmit(addNewWord)
+            .onAppear(perform: startGame)  // call the func when the view is shown
         }
     }
     
     func addNewWord(){
         let answer = newWord.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-        guard answer.count > 0 else { return }  // Making sure there's at least one charecter in here
         
-        // Extra validation
+        guard answer.count > 0 else { return }
         
         withAnimation{
-            usedWords.insert(answer, at: 0)
+            usedWords.insert(newWord, at: 0)
         }
         
-        newWord = ""  // Empty again
+        newWord = ""
+    }
+    
+    func startGame(){
+        if let startWordsUrl = Bundle.main.url(forResource: "start", withExtension: "txt"){
+            if let startWords = try? String(contentsOf: startWordsUrl){
+                let allWords = startWords.components(separatedBy: "\n")
+                rootWord = allWords.randomElement() ?? "silkworm"
+                return  // only to exit
+            }
+        }
+        
+        fatalError("Could not load start.txt from bundle.")
+        
     }
 }
 
