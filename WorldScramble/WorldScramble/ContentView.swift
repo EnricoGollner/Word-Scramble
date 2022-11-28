@@ -50,7 +50,7 @@ struct ContentView: View {
         guard answer.count > 0 else{ return }
         
         guard isOriginal(word: answer) else{
-            wordError(title: "Word already used", message: "Be more original!")
+            wordError(title: "Word already used", message: "Be more original! \nRemember:\nYou can't use the displayed word!")
             return
         }
         
@@ -62,6 +62,10 @@ struct ContentView: View {
         guard isReal(word: answer) else{
             wordError(title: "Word not recognize", message: "You can't just make them up, you know!")
             return
+        }
+        
+        guard isMore3letters(word: answer) else{
+            wordError(title: "More than 3 letters", message: "You can do that!")
         }
         
         withAnimation{
@@ -81,7 +85,7 @@ struct ContentView: View {
     }
     
     func isOriginal(word: String) -> Bool{
-        !usedWords.contains(word)
+        !usedWords.contains(word) && word != rootWord
     }
     
     func isPossible(word: String) -> Bool{
@@ -106,6 +110,10 @@ struct ContentView: View {
         let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
         
         return misspelledRange.location == NSNotFound
+    }
+    
+    func isMore3letters(word: String) -> Bool{
+        return word.count > 2
     }
     
     func wordError(title: String, message: String){
