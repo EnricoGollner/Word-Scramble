@@ -16,6 +16,8 @@ struct ContentView: View {
     @State private var errorMessage = ""
     @State private var showingError = false
     
+    @State private var score = 0
+    
     var body: some View{
         NavigationStack{
             List{
@@ -41,6 +43,10 @@ struct ContentView: View {
             } message: {
                 Text(errorMessage)
             }
+            .toolbar{
+                Button("Restart", action: startGame)
+            }
+            Text("Score: \(score)")
         }
     }
     
@@ -72,12 +78,16 @@ struct ContentView: View {
         
         withAnimation{
             usedWords.insert(answer, at: 0)
+            score += newWord.count
         }
         
         newWord = ""
     }
     
     func startGame(){
+        score = 0
+        usedWords = []
+        
         if let startUrl = Bundle.main.url(forResource: "start", withExtension: "txt"){
             if let startWords = try? String(contentsOf: startUrl){
                 let allWords = startWords.components(separatedBy: "\n")
@@ -106,7 +116,6 @@ struct ContentView: View {
     
     func isReal(word: String) -> Bool{
         let checker = UITextChecker()
-        
         let range = NSRange(location: 0, length: word.utf16.count)
         
         let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
