@@ -33,6 +33,7 @@ struct ContentView: View {
                 }
             }
             .navigationTitle(rootWord)
+            .navigationBarTitleDisplayMode(.large)
             .onSubmit(addNewWord)
             .onAppear(perform: startGame)
             .alert(errorTitle, isPresented: $showingError){
@@ -66,6 +67,7 @@ struct ContentView: View {
         
         guard isMore3letters(word: answer) else{
             wordError(title: "More than 3 letters", message: "You can do that!")
+            return
         }
         
         withAnimation{
@@ -77,8 +79,8 @@ struct ContentView: View {
     
     func startGame(){
         if let startUrl = Bundle.main.url(forResource: "start", withExtension: "txt"){
-            if let startFile = try? String(contentsOf: startUrl){
-                let allWords = startFile.components(separatedBy: "\n")
+            if let startWords = try? String(contentsOf: startUrl){
+                let allWords = startWords.components(separatedBy: "\n")
                 rootWord = allWords.randomElement() ?? "silkworm"
             }
         }
