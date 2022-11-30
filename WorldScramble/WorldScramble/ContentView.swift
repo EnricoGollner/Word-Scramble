@@ -46,6 +46,7 @@ struct ContentView: View {
             .toolbar{
                 Button("Restart", action: startGame)
             }
+            
             Text("Score: \(score)")
         }
     }
@@ -71,8 +72,8 @@ struct ContentView: View {
             return
         }
         
-        guard isMore3letters(word: answer) else{
-            wordError(title: "More than 3 letters", message: "You can do that!")
+        guard is3orMoreletters(word: answer) else{
+            wordError(title: "More than 3 letters", message: "You can do better!")
             return
         }
         
@@ -116,6 +117,7 @@ struct ContentView: View {
     
     func isReal(word: String) -> Bool{
         let checker = UITextChecker()
+        
         let range = NSRange(location: 0, length: word.utf16.count)
         
         let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
@@ -123,7 +125,7 @@ struct ContentView: View {
         return misspelledRange.location == NSNotFound
     }
     
-    func isMore3letters(word: String) -> Bool{
+    func is3orMoreletters(word: String) -> Bool{
         return word.count > 2
     }
     
